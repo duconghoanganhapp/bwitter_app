@@ -6,7 +6,7 @@
 -- Generation Time: Jan 21, 2015 at 12:25 PM
 -- Server version: 5.1.41
 -- PHP Version: 5.3.1
-
+use facebook_project;
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 
