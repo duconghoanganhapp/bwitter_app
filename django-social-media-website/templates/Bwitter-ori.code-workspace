@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../Bwitter-ori"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Bwitter-ori"
+	}
+}

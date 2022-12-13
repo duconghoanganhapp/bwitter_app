@@ -6,27 +6,41 @@ from django.contrib.auth.decorators import login_required
 from .models import Profile, Post, LikePost, FollowersCount
 from itertools import chain
 import random
-
+import uuid
 # Create your views here.
 
 @login_required(login_url='signin')
 def index(request):
     user_object = User.objects.get(username=request.user.username)
     user_profile = Profile.objects.get(user=user_object)
-
+    all_profile = Profile.objects.all().values()
+    print(all_profile)
     user_following_list = []
     feed = []
+    avatar_user_post = {}
+    
+    # get post avatar user
+    # for x in all_profile:
+    #     avatar_user_post[str(x.user)] = x.profileimg.url
+    # print(avatar_user_post)
 
     user_following = FollowersCount.objects.filter(follower=request.user.username)
-
+    
     for users in user_following:
         user_following_list.append(users.user)
 
+    # get feed list of user following list 
     for usernames in user_following_list:
         feed_lists = Post.objects.filter(user=usernames)
         feed.append(feed_lists)
 
     feed_list = list(chain(*feed))
+    
+    # get post_id of post which current user liked 
+    like_posts_lists = LikePost.objects.filter(username=request.user.username)
+    like_posts_list = []
+    for id in like_posts_lists:
+        like_posts_list.append(uuid.UUID(id.post_id))
 
     # user suggestion starts
     all_users = User.objects.all()
@@ -53,8 +67,7 @@ def index(request):
 
     suggestions_username_profile_list = list(chain(*username_profile_list))
 
-
-    return render(request, 'index.html', {'user_profile': user_profile, 'posts':feed_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4]})
+    return render(request, 'index2.html', {'user_profile': user_profile, 'posts':feed_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4], 'like_posts_list':like_posts_list})
 
 @login_required(login_url='signin')
 def upload(request):
@@ -94,12 +107,12 @@ def search(request):
     return render(request, 'search.html', {'user_profile': user_profile, 'username_profile_list': username_profile_list})
 
 @login_required(login_url='signin')
-def like_post(request):
+def like_posts(request):
     username = request.user.username
     post_id = request.GET.get('post_id')
-
+    
     post = Post.objects.get(id=post_id)
-
+    
     like_filter = LikePost.objects.filter(post_id=post_id, username=username).first()
 
     if like_filter == None:
