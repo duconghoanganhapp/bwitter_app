@@ -15,7 +15,7 @@ def index(request):
     user_profile = Profile.objects.get(user=user_object)
     all_profile = Profile.objects.all().values()
     print(all_profile)
-    user_following_list = []
+    user_following_lists = []
     feed = []
     avatar_user_post = {}
     
@@ -27,11 +27,11 @@ def index(request):
     user_following = FollowersCount.objects.filter(follower=request.user.username)
     
     for users in user_following:
-        user_following_list.append(users.user)
+        user_following_lists.append(users.profile.id)
 
     # get feed list of user following list 
-    for usernames in user_following_list:
-        feed_lists = Post.objects.filter(user=usernames)
+    for user_following_list in user_following_lists:
+        feed_lists = Post.objects.filter(profile=user_following_list)
         feed.append(feed_lists)
 
     feed_list = list(chain(*feed))
@@ -54,7 +54,6 @@ def index(request):
     current_user = User.objects.filter(username=request.user.username)
     final_suggestions_list = [x for x in list(new_suggestions_list) if ( x not in list(current_user))]
     random.shuffle(final_suggestions_list)
-
     username_profile = []
     username_profile_list = []
 
