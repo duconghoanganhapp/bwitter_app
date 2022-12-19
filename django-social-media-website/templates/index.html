@@ -1,409 +1,633 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{% static 'favicon.png' %}" rel="icon" type="image/png">
-    <title>Home</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link href="{% static 'favicon.png' %}" rel="icon" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bwitter</title>
+  <!-- <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}"> -->
+  <link rel="stylesheet" href="{% static 'assets/css/style1.css' %}">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <!-- Search Icon:https://fonts.google.com/icons?icon.query=share -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+    crossorigin="anonymous" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
 <body>
+  <div class="wrapper">
 
-            <header>
-                <div class="header_inner">
-                    <form action="/search" method="POST">
-                    {% csrf_token %}
-                    <div class="left-side">
-                        <!-- Logo -->
-                        <div id="logo" class=" uk-hidden@s">
-                            <a href="home.html">
-                                <b><h1 style="text-transform: uppercase;">Bwitter</h1></b>
-                            </a>
-                        </div>
+    <!-- sidebar starts -->
+    <div class="sidebar">
+      <i class="fab fa-twitter"></i>
 
-                        <!--<div class="triger" uk-toggle="target: #wrapper ; cls: sidebar-active">
-                            <i class="uil-bars"></i>
-                        </div>-->
-
-                        <!-- <div class="header_search"> -->
-                            <input type="text" name="username" placeholder="Search for username..">&nbsp; &nbsp;
-                            <button type="submit"><i class="fa fa-search fa-1x"></i></button>
-                        <!-- </div> -->
-
-                    </div>
-                    </form>
-                    <div class="right-side lg:pr-4">
-                         <!-- upload -->
-                        <a href="#"
-                            class="bg-black flex font-bold hidden hover:bg-black hover:text-white inline-block items-center lg:block max-h-10 mr-4 px-4 py-2 rounded shado text-white">
-                            <ion-icon name="add-circle" class="-mb-1
-                             mr-1 opacity-90 text-xl uilus-circle"></ion-icon>Bwitter
-                        </a>
-                         <!-- upload dropdown box -->
-                        <div uk-dropdown="pos: top-right;mode:click ; animation: uk-animation-slide-bottom-small" class="header_dropdown">
-    
-                            <!-- notivication header -->
-                            <div class="px-4 py-3 -mx-5 -mt-4 mb-5 border-b">
-                                <h4>Upload Pics</h4>
-                            </div>
-    
-                            <!-- notification contents -->
-                            <div class="flex justify-center flex-center text-center">
-    
-                                <div class="flex flex-col choose-upload text-center">
-                                   
-                                    <div class="bg-gray-100 border-2 border-dashed flex flex-col h-24 items-center justify-center relative w-full rounded-lg  ">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-12">
-                                            <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
-                                            <path d="M9 13h2v5a1 1 0 11-2 0v-5z" />
-                                        </svg>
-                                    </div>
-
-                                    <form action="upload" method="POST" enctype="multipart/form-data" >
-                                    {% csrf_token %}
-                                    <p class="my-3 leading-6"> Upload pics
-                                    </p>
-                                    <div>
-                                        <input type="file" name="image_upload">
-                                        <!-- <a href="#" class="button soft-warning small"> Choose file</a> -->
-                                        <textarea class="button soft-warning small" name="caption" placeholder="caption..." ></textarea>
-                                        <br>
-                                        <button class="button bg-blue-700" type="submit" >Upload</button>
-                                    </div>
-                                    </form>
-
-                                    <!-- <a href="#" class="uk-text-muted mt-3 uk-link"
-                                        uk-toggle="target: .choose-upload ;  animation: uk-animation-slide-right-small, uk-animation-slide-left-medium; queued: true">
-                                        Or Import Video </a> -->
-                                </div>
-    
-                                <div class="uk-flex uk-flex-column choose-upload" hidden>
-                                    <div class="mx-auto flex flex-col h-24 items-center justify-center relative w-full rounded-lg">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-12">
-                                            <path fill-rule="evenodd" d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                    <p class="my-3 leading-6"> Import videos from YouTube <br> Copy / Paste your video link here </p>
-                                    <form class="uk-grid-small" uk-grid>
-                                        <div class="uk-width-expand">
-                                            <input type="text" class="uk-input uk-form-small  bg-gray-200 " style="box-shadow:none" placeholder="Paste link">
-                                        </div>
-                                        <div class="uk-width-auto"> <button type="submit" class="button soft-warning -ml-2">
-                                                Import </button> </div>
-                                    </form>
-                                    <a href="#" class="uk-text-muted mt-3 uk-link"
-                                        uk-toggle="target: .choose-upload ; animation: uk-animation-slide-left-small, uk-animation-slide-right-medium; queued: true">
-                                        Or Upload Video </a>
-                                </div>
-    
-                            </div>
-                            <div class="px-4 py-3 -mx-5 -mb-4 mt-5 border-t text-sm">
-                                Image size Maxmium 999MB
-                            </div>
-                        </div>
-                        
-                         <!-- Notification -->
-
-                        <!-- <a href="#" class="header-links-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none"><path d="M12 22a2.02 2.02 0 0 1-2.01-2h4a2.02 2.02 0 0 1-.15.78a2.042 2.042 0 0 1-1.44 1.18h-.047A1.922 1.922 0 0 1 12 22zm8-3H4v-2l2-1v-5.5a8.065 8.065 0 0 1 .924-4.06A4.654 4.654 0 0 1 10 4.18V2h4v2.18c2.579.614 4 2.858 4 6.32V16l2 1v2z" fill="currentColor"/></g></svg>
-                        </a>
-                        <div uk-drop="mode: click;offset: 4" class="header_dropdown">
-                            <h4
-                                class="-mt-5 -mx-5 bg-gradient-to-t from-gray-100 to-gray-50 border-b font-bold px-6 py-3">
-                                Notification </h4>
-                            <ul class="dropdown_scrollbar" data-simplebar>
-                                <li>
-                                    <a href="#">
-                                        <div class="drop_avatar"> <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="">
-                                        </div>
-                                        <div class="drop_content">
-                                            <p> <strong class="text-link" >Taiye</strong>  
-                                                <span class="text-link"> is following you  </span>
-                                            </p>
-                                            <span class="time-ago"> 2 hours ago </span>
-                                        </div>
-                                    </a>
-                                </li>
-                                
-
-                            </ul>
-                            <a href="#" class="see-all">See all</a>
-                        </div> -->
-
-                        <!-- Messages -->
-
-                        <!-- <a href="#" class="header-links-item">
-                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="0.5em" height="0.5em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><g fill="currentColor"><path d="M2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/></g></svg>
-                        </a>
-                        <div uk-drop="mode: click;offset: 4" class="header_dropdown">
-                            <h4
-                                class="-mt-5 -mx-5 bg-gradient-to-t from-gray-100 to-gray-50 border-b font-bold px-6 py-3">
-                                Messages </h4>
-                            <ul class="dropdown_scrollbar" data-simplebar>
-                                <li>
-                                    <a href="#">
-                                        <div class="drop_avatar"> <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="">
-                                        </div>
-                                        <div class="drop_content">
-                                            <strong> Taiye </strong> <time> 6:43 PM</time>
-                                            <p> hi tomi </p>
-                                        </div>
-                                    </a>
-                                </li>
-                                
-
-
-                            </ul>
-                            <a href="#" class="see-all">See all</a>
-                        </div> -->
-
-                        <!-- profile -->
-
-                        <a href="#">
-                            <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="">
-                        </a>
-                        <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
-                            <ul>
-                                <li><a href="/settings"> Account setting </a> </li>
-                                <li><a href="logout"> Log Out</a></li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-            </header>
-
-            <div class="container m-auto">
-
-                <!--<h1 class="lg:text-2xl text-lg font-extrabold leading-none text-gray-900 tracking-tight mb-5"> Feed </h1>--->
-
-                <div class="lg:flex justify-center lg:space-x-10 lg:space-y-0 space-y-5">
-
-                    <!-- left sidebar-->
-                    <div class="space-y-5 flex-shrink-0 lg:w-7/12">
-
-                        <!-- post 1-->
-
-                        {% for post in posts reversed %}
-                        <div class="bg-white shadow rounded-md  -mx-2 lg:mx-0">
-    
-                            <!-- post header-->
-                            <div class="flex justify-between items-center px-4 py-3">
-                                <div class="flex flex-1 items-center space-x-4">
-                                    <!-- <a href="#">
-                                        <div class="bg-gradient-to-tr from-yellow-600 to-pink-600 p-0.5 rounded-full">  
-                                            <img src="{% static 'assets/images/avatars/avatar-2.jpg' %}" class="bg-gray-200 border border-white rounded-full w-8 h-8">
-                                        </div>
-                                    </a> -->
-                                    <span class="block font-semibold "><a href="/profile/{{post.user}}">@{{post.user}}</a></span>
-
-                                    {% with a=img_arry[post.user] %}
-                                        {{ a }}
-                                    {% endwith %}
-                                </div>
-                              <div>
-                                <a href="#"> <i class="icon-feather-more-horizontal text-2xl hover:bg-gray-200 rounded-full p-2 transition -mr-1 "></i> </a>
-                                <div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100  " uk-drop="mode: hover;pos: top-right">
-                              
-                                    <ul class="space-y-1">
-                                      <!-- <li> 
-                                          <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
-                                           <i class="uil-share-alt mr-1"></i> Share
-                                          </a> 
-                                      </li> -->
-                                      <!-- <li> 
-                                          <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
-                                           <i class="uil-edit-alt mr-1"></i>  Edit Post 
-                                          </a> 
-                                      </li> -->
-                                      <!-- <li> 
-                                          <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
-                                           <i class="uil-comment-slash mr-1"></i>   Disable comments
-                                          </a> 
-                                      </li>  -->
-                                      <!-- <li> 
-                                          <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md ">
-                                           <i class="uil-favorite mr-1"></i>  Add favorites 
-                                          </a> 
-                                      </li> -->
-                                      <!-- <li>
-                                        <hr class="-mx-2 my-2 ">
-                                      </li> -->
-                                      <li> 
-                                          <a href="#" class="flex items-center px-3 py-2 text-red-500 hover:bg-red-100 hover:text-red-500 rounded-md ">
-                                           <i class="uil-trash-alt mr-1"></i>  Delete Post
-                                          </a> 
-                                      </li>
-                                    </ul>
-                                
-                                </div>
-                              </div>
-                            </div>
-    
-                            <div uk-lightbox>
-                                <a href="{{post.image.url}}">  
-                                    <img src="{{post.image.url}}" alt="">
-                                </a>
-                            </div>
-                            
-    
-                            <div class="py-3 px-4 space-y-3"> 
-                               
-                                <div class="flex space-x-4 lg:font-bold">
-                                    <a href="/like-post?post_id={{post.id}}" class="flex items-center space-x-2">
-                                        <div class="p-2 rounded-full text-black">
-                                            {% if post.id|safe in like_post_ids %} 
-                                                HEART
-                                            {% else %}
-                                                NO HEART
-                                            {% endif %}
-                                        </div>
-                                        
-                                    </a>
-                                    <!-- <a href="#" class="flex items-center space-x-2">
-                                        <div class="p-2 rounded-full text-black">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="25" height="25" class="">
-                                                <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        
-                                    </a> -->
-                                    <!--<a href="{{post.image.url}}" class="flex items-center space-x-2 flex-1 justify-end" download>
-                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="25" height="25" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><g fill="currentColor"><path d="M8.5 1.5A1.5 1.5 0 0 1 10 0h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h6c-.314.418-.5.937-.5 1.5v6h-2a.5.5 0 0 0-.354.854l2.5 2.5a.5.5 0 0 0 .708 0l2.5-2.5A.5.5 0 0 0 10.5 7.5h-2v-6z"/></g></svg>
-                                        
-                                    </a>-->
-                                </div>
-                                <!-- <div class="flex items-center space-x-3"> 
-                                    <div class="flex items-center">
-                                        <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white ">
-                                        <img src="{% static 'assets/images/avatars/avatar-4.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white  -ml-2">
-                                        <img src="{% static 'assets/images/avatars/avatar-2.jpg' %}" alt="" class="w-6 h-6 rounded-full border-2 border-white  -ml-2">
-                                    </div>
-                                    <div class="">
-                                        Liked <strong> taiye</strong> and <strong> 209 Others </strong>
-                                    </div>
-                                </div> -->
-
-                                <p>
-                                    <a href="/profile/{{post.user}}"><strong>{{post.user}}</strong></a> {{post.caption}}
-                                </p>
-
-                                <!-- <div class="border-t pt-4 space-y-4 ">
-                                    <div class="flex">
-                                        <div class="w-10 h-10 rounded-full relative flex-shrink-0">
-                                            <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="" class="absolute h-full rounded-full w-full">
-                                        </div>
-                                        <div class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 h-full relative lg:ml-5 ml-2 lg:mr-20   ">
-                                            <p class="leading-6">Y'all like billie eillish? <urna class="i uil-heart"></urna> <i
-                                                    class="uil-grin-tongue-wink"> </i> </p>
-                                            <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 "></div>
-                                        </div>
-                                    </div>
-                                    <div class="flex">
-                                        <div class="w-10 h-10 rounded-full relative flex-shrink-0">
-                                            <img src="{% static 'assets/images/avatars/avatar-1.jpg' %}" alt="" class="absolute h-full rounded-full w-full">
-                                        </div>
-                                        <div class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 h-full relative lg:ml-5 ml-2 lg:mr-20   ">
-                                            <p class="leading-6">She's my favourite <i class="uil-grin-tongue-wink-alt"></i>
-                                            </p>
-                                            <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 "></div>
-                                        </div>
-                                    </div>
-                                </div> -->
-
-                                <!-- <div class="bg-gray-100 bg-gray-100 rounded-full rounded-md relative ">
-                                    <input type="text" placeholder="post a comment" class="bg-transparent max-h-10 shadow-none">
-                                    <div class="absolute bottom-0 flex h-full items-center right-0 right-3 text-xl space-x-2">
-                                        <a href="#"> <i class="uil-image"></i></a>
-                                        <a href="#"> <i class="uil-video"></i></a>
-                                    </div>
-                                </div> -->
-    
-                            </div>
-    
-                        </div>
-                        {% endfor %}
-    
-                        
-
-
-                    </div>
-
-                    <!-- right sidebar-->
-                    <div class="lg:w-5/12">
-
-                        <div class="bg-white  shadow-md rounded-md overflow-hidden">
-
-                            <div class="bg-gray-50  border-b border-gray-100 flex items-baseline justify-between py-4 px-6 ">
-                                <h2 class="font-semibold text-lg">Users You Can Follow</h2>
-                                <!-- <a href="#"> Refresh</a> -->
-                            </div>
-                           
-                            <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4 ">
-
-                                {% for suggestion in suggestions_username_profile_list %}
-                                <div class="flex items-center justify-between py-3">
-                                    <div class="flex flex-1 items-center space-x-4">
-                                        <a href="/profile/{{suggestion.user}}">
-                                            <img src="{{suggestion.profileimg.url}}" class="bg-gray-200 rounded-full w-10 h-10">
-                                        </a>
-                                        <div class="flex flex-col" style="width: 70%;">
-                                            <span class="block capitalize font-semibold"> {{suggestion.user}} </span>
-                                            <span class="block capitalize text-sm"> {{suggestion.bio}} </span>
-                                        </div>
-                                    </div>
-                                    
-                                    <a href="/profile/{{suggestion.user}}" class="border border-gray-200 font-semibold px-4 py-1 rounded-full hover:bg-pink-600 hover:text-white hover:border-pink-600 "> View User </a>
-                                </div>
-                                {% endfor %}
-
-                            </div>
-
-                        </div>
-
-                      
-
-                    </div>
-
-                </div>               
-          
-
-            </div>
-
+      <div class="sidebarOption active">
+        <div class="sub_sidebarOption">
+          <span class="material-icons"> home </span>
+          <h2>Home</h2>
         </div>
+      </div>
+
+      <div class="sidebarOption">
+        <div class="sub_sidebarOption">
+          <span class="material-icons"> search </span>
+          <h2>Explore</h2>
+        </div>
+      </div>
+
+      <div class="sidebarOption">
+        <div class="sub_sidebarOption">
+          <span class="material-icons"> notifications_none </span>
+          <h2>Notifications</h2>
+        </div>
+      </div>
+
+      <div class="sidebarOption">
+        <div class="sub_sidebarOption">
+          <span class="material-icons"> mail_outline </span>
+          <h2>Messages</h2>
+        </div>
+      </div>
+
+      <div class="sidebarOption">
+        <div class="sub_sidebarOption">
+          <span class="material-icons"> bookmark_border </span>
+          <h2>Bookmarks</h2>
+        </div>
+      </div>
+
+      <div class="sidebarOption">
+        <div class="sub_sidebarOption">
+          <span class="material-icons"> list_alt </span>
+          <h2>Lists</h2>
+        </div>
+      </div>
+      {% csrf_token %}
+      <a href="/profile/{{user_profile.user}}" class="sidebarOption">
+        <div class="sub_sidebarOption">
+          <span class="material-icons"> perm_identity </span>
+          <h2>Profile</h2>
+        </div>
+      </a>
+
+      <div class="sidebarOption">
+        <div class="sub_sidebarOption">
+          <span class="material-icons"> more_horiz </span>
+          <h2>More</h2>
+        </div>
+      </div>
+      <button class="sidebar__tweet">Tweet</button>
+      <div class="sidebarOption logout_nav">
+        <div class="sub_sidebarOption">
+          <a href="#">
+            <img src="{{user_profile.profileimg.url}}" class="header-avatar" alt="">
+          </a>
+          <ul class="subnav_name">
+            <li>{{user_profile.user}}</li>
+            <li>@{{user_profile.user}}</li>
+          </ul>
+          <ul class="subnav_action">
+            <li><a href="/settings"> Account setting </a> </li>
+            <li><a href="logout"> Log Out</a></li>
+          </ul>
+          <span class="material-icons"> more_vert </span>
+        </div>
+      </div>
 
     </div>
+    <!-- sidebar ends -->
+
+    <!-- feed starts -->
+    <div class="feed">
+      <div class="feed__header">
+        <h2>Home</h2>
+      </div>
+
+      <!-- tweetbox starts -->
+      <div class="tweetBox">
+        <form action="upload" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="tweetbox__input">
+            <img src="{{user_profile.profileimg.url}}" alt="" />
+            <textarea required name="caption" placeholder="What's happening?"
+              style="border: none; outline: 0; width: 100%;"></textarea>
+            <!-- <input type="text" placeholder="What's happening?" /> -->
+          </div>
+          <div class="tweet__footer flex">
+
+            <div class="tweetOptions">
+
+              <label for="id_input_upload"><span
+                  class="material-symbols-outlined cursor">imagesmode</span></label><input id="id_input_upload"
+                type="file" name="image_upload" style="display: none;">
+              <span class="material-symbols-outlined cursor">gif_box</span>
+              <span class="material-symbols-outlined cursor">ballot</span>
+              <span class="material-symbols-outlined cursor">sentiment_satisfied</span>
+              <span class="material-symbols-outlined cursor">pending_actions</span>
+              <span class="material-symbols-outlined cursor">location_on</span>
+            </div>
+            <button class="tweetBox__tweetButton" type="submit">Tweet</button>
+          </div>
+        </form>
+      </div>
+      <!-- tweetbox ends -->
+      <!-- post starts -->
+      <div class="list__posts">
+        {% for comment in comment_list reversed %}
+        <div class="post">
+          <div class="post__avatar" style="text-align: -webkit-center;">
+            <img src="{{ comment.profile.profileimg.url }}" alt="" />
+            <div style="    height: auto; min-height:45px;
+            width: 0px;
+            background-color: #a5a4a4;
+            border: 1px solid #a5a4a4;"></div>
+            <img src="{{ user_profile.profileimg.url }}" alt="" />
+          </div>
+
+          <div class="post__body">
+            <div class="post__header">
+              <div class="post__headerText">
+                <h3>
+                  <a href="/profile/{{comment.profile.user.username}}">
+                    {{comment.profile.user.username}}
+                    <span class="post__headerSpecial">
+                      <span class="material-icons post__badge"> verified </span>
+                      @{{comment.profile.user.username}}
+                    </span>
+                  </a>
+                </h3>
+              </div>
+              <div class="post__headerDescription">
+                <p>{{comment.post.caption}}</p>
+              </div>
+            </div>
+
+            <div style="height: auto;     min-height: 45px;            "></div>
+
+            <div class="post__header">
+              <div class="post__headerText">
+                <h3>
+                  <a href="/profile/{{user_profile.user.username}}">
+                    {{user_profile.user.username}}
+                    <span class="post__headerSpecial">
+                      <span class="material-icons post__badge"> verified </span>
+                      @{{user_profile.user.username}}
+                    </span>
+                  </a>
+                </h3>
+              </div>
+              <div class="post__headerDescription">
+                <p>{{comment.caption}}</p>
+              </div>
+            </div>
+            <div uk-lightbox class="post__img">
+              {% if comment.image.url != null %}
+              <a href="{{comment.image.url}}">
+                <img src="{{comment.image.url}}" alt="" style="max-width: 80px;">
+              </a>
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+        {% endfor %}
+
+        {% for post in posts reversed %}
+        <div class="post">
+          <div class="post__avatar">
+            <img src="{{ post.profile.profileimg.url }}" alt="" />
+          </div>
+
+          <div class="post__body">
+            <div class="post__header">
+              <div class="post__headerText">
+                <h3>
+                  <a href="/profile/{{post.user}}">
+                    {{post.user}}
+                    <span class="post__headerSpecial">
+                      <span class="material-icons post__badge"> verified </span>
+                      @{{post.user}}
+                    </span>
+                  </a>
+                </h3>
+              </div>
+              <div class="post__headerDescription">
+                <p>{{post.caption}}</p>
+              </div>
+            </div>
+
+            <div uk-lightbox class="post__img">
+              {% if post.image.url != null %}
+              <a href="{{post.image.url}}">
+                <img src="{{post.image.url}}" alt="">
+              </a>
+              {% endif %}
+            </div>
+
+            <div class="post__footer">
+              <div class="post__action favorite-post">
+                <a href="/like-post?post_id={{post.id}}" class="flex">
+                  <div class="test">
+                    <!-- <p> {{post.id}} vs {{like_posts_list}}</p> -->
+                    {% if post.id in like_posts_list %}
+                    <svg class="flex none redHeart" xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20"
+                      viewBox="0 0 256 256" xml:space="preserve" style="margin-right: 4px">
+                      <defs>
+                      </defs>
+                      <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
+                        transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+                        <path
+                          d="M 7.486 13.502 c 9.982 -9.982 26.165 -9.982 36.147 0 L 45 14.869 l 0 0 c 6.895 22.882 6.259 47.092 0 72.294 L 26.927 69.089 c 0 0 0 0 0 0 l -19.44 -19.44 C -2.495 39.667 -2.495 23.484 7.486 13.502 z"
+                          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(214,73,62); fill-rule: nonzero; opacity: 1;"
+                          transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                        <path
+                          d="M 82.514 13.502 c -9.982 -9.982 -26.165 -9.982 -36.147 0 L 45 14.869 l 0 0 v 72.294 l 18.073 -18.073 c 0 0 0 0 0 0 l 19.44 -19.44 C 92.495 39.667 92.495 23.484 82.514 13.502 z"
+                          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(215,90,74); fill-rule: nonzero; opacity: 1;"
+                          transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                      </g>
+                    </svg>
+                    {% else %}
+                    <span class="material-symbols-outlined flex none emptyHeart"> favorite </span>
+                    {% endif %}
+
+                  </div>
+                  <h3>{{post.no_of_likes}}</h3>
+                </a>
+              </div>
+              <div class="post__action comment-post" onclick="clickComment(this)">
+                <span class="material-symbols-outlined "> mode_comment </span>
+                <h3><!-- numbers of comments --></h3>
+              </div>
+              <div class="post__action publish-post">
+                <span class="material-symbols-outlined "> publish </span>
+                <h3><!-- numbers of shares --></h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <!-- post ends -->
+    </div>
+    <!-- feed ends -->
+
+    <!-- widgets starts -->
+    <div class="widgets">
+      <div class="widgets__input">
+        <span class="material-icons widgets__searchIcon"> search </span>
+        <form action="/search" method="POST">
+          {% csrf_token %}
+          <input type="text" name="username" placeholder="Search Bwitter">&nbsp; &nbsp;
+          <button type="submit"></button>
+        </form>
 
 
+        <!-- <input type="text" placeholder="Search Bwitter" /> -->
+      </div>
+
+      <div class="widgets__widgetContainer">
+        <h2>Who to follow</h2>
+        <!-- start list trends-->
+        <div class="list__follow">
+          {% for suggestion in suggestions_username_profile_list %}
+          <div class="flex follow">
+            <div class="flex follow-info">
+              <a href="/profile/{{suggestion.user}}">
+                <img src="{{suggestion.profileimg.url}}" class="">
+              </a>
+              <div class="follow-name">
+                <span> {{suggestion.user}} <span class="material-icons post__badge"> verified </span></span> <br>
+                <span> @{{suggestion.user}} </span>
+              </div>
+            </div>
+
+            <a href="/profile/{{suggestion.user}}" class="follow-view"> View </a>
+          </div>
+          {% endfor %}
+        </div>
+        <button>Show more</button>
+        <!-- end list trends-->
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      </div>
+    </div>
+  </div>
+  <!-- widgets ends -->
+
+  <!-- Modal comment -->
+  <div class="modal js-modal">
+    <div class="modal-container js-modal-container">
+      <form action="upload" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <header class="modal-header">
+          <span class="modal-close js-modal-close material-symbols-outlined">close</span>
+        </header>
+
+        <div class="modal-body">
+          <!-- Content replied -->
+          <div class="content-replied-modal">
+            <div class="post">
+              <div class="post__avatar">
+                <!-- load post__avatar here -->
+              </div>
+              <div class="post__body">
+                <div class="post__header">
+                  <!-- load post__header here -->
+                </div>
+                <div class="post__img">
+                  <!-- load post__img here -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Notify replying -->
+          <div class="content-replying-modal">
+            <p>replying to <a class="tag-name-modal" href=""></a></p>
+          </div>
+          <!-- Content reply -->
+          <div class="your-content-reply flex">
+            <div class="post__avatar">
+              <!-- load post__avatar here -->
+              <img src="{{user_profile.profileimg.url}}" alt="" />
+            </div>
+            <textarea required class="comment-input" name="caption" placeholder="Tweet your reply"
+              style="margin-top: 15px; border: none; outline: 0; width: 100%;"></textarea>
+            <!-- <input type="text" class="comment-input" placeholder="Tweet your reply"> -->
+          </div>
+        </div>
+
+        <footer class="modal-footer flex">
+          <div class="tweetOptions">
+            <label for="id_input_upload_comment"><span class="material-symbols-outlined cursor">imagesmode</span></label><input
+              id="id_input_upload_comment" type="file" name="image_upload" style="display: none;">
+            <span class="material-symbols-outlined cursor">gif_box</span>
+            <span class="material-symbols-outlined cursor">ballot</span>
+            <span class="material-symbols-outlined cursor">sentiment_satisfied</span>
+            <span class="material-symbols-outlined cursor">pending_actions</span>
+            <span class="material-symbols-outlined cursor">location_on</span>
+          </div>
+          <button class="tweetBox__tweetButton" type="submit">Tweet</button>
+          <!-- <button class="tweetBox__tweetButton js-submit-comment-modal"onclick="clickSubmitCommentForm(this)">Tweet</button> -->
+        </footer>
+      </form>
+    </div>
+  </div>
+  <!-- handle feed -->
+  <script>
 
 
+    // handle list trends
+    $(document).ready(function () {
+      maxTop = 1000
+      keyTop = -1
+      for (let i = 0; i < 3; i++) {
+        // FETCHING DATA FROM JSON FILE
+        // $.getJSON("main.json", function (data){
+        //   var trends = '';
+        //   var maxLike = data[0]["like"]
+        //   var keymax = 0
 
+        //   $.each(data, function (key, value) {
 
+        //     // console.log(data[0]["like"])
 
+        //     if(maxLike < value["like"] && value["like"] < maxTop){
+        //       maxLike = value["like"]
 
- <!-- Scripts
-    ================================================== -->
-    <script src="{% static 'assets/js/tippy.all.min.js' %}"></script>  
-    <script src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'assets/js/uikit.js' %}"></script>
-    <script src="{% static 'assets/js/simplebar.js' %}"></script>
-    <script src="{% static 'assets/js/custom.js' %}"></script>
+        //       keymax = key
+        //     }
+        //     // console.log(value["like"])
+        //     // console.log(keymax)
+        //   });
+        //   maxTop = maxLike
+        //   keyTop = keymax
+        //   trends += `
+        //       <div class="subtrend">
+        //         <p>Trending in ${data[keymax]["contry"]}</p>
+        //         <h1>${data[keymax]["content"]}</h1>
+        //       </div>
+        //     `
+        //   $('.handle-list-trends').append(trends);
+        // });
+      }
+    });
 
+    //handle emotional clicking 1
+    function clickEmotion(id) {
+      const emptyHeart = id.querySelector(".emptyHeart")
+      emptyHeart.classList.toggle('flex')
+      const redHeart = id.querySelector(".redHeart")
+      redHeart.classList.toggle('flex')
 
-    <script src="{% static '../../unpkg.com/ionicons%405.2.3/dist/ionicons.js' %}"></script>
+      id.classList.toggle('bg-pink')
+    }
+
+    //handle emotional clicking 2
+    // function clickEmotion1(id) {
+    //   console.log(id)
+    //   console.log(typeof(id))
+    //   const emptyHeart = id
+    //   emptyHeart.classList.remove('flex')
+    //   const redHeart = id.parentElement.querySelector(".redHeart")
+    //   redHeart.classList.add('flex')
+    //   const Emotion = id.parentElement.parentElement
+    //   Emotion.classList.add('bg-pink')
+    // }
+    // function clickEmotion2(id) {
+    //   console.log(id)
+    //   console.log(typeof(id))
+    //   const emptyHeart = id.parentElement.querySelector(".emptyHeart")
+    //   emptyHeart.classList.add('flex')
+    //   const redHeart = id
+    //   redHeart.classList.remove('flex')
+    //   const Emotion = id.parentElement.parentElement
+    //   Emotion.classList.remove('bg-pink')
+    // }
+
+    let currentComment
+    // handle comment
+    function clickComment(id) {
+      // const buyBtns = id
+      currentComment = id
+
+      //load elements from post to modal
+      document.querySelector('.content-replied-modal').querySelector('.post').querySelector('.post__avatar').innerHTML = id.parentElement.parentElement.parentElement.querySelector('.post__avatar').innerHTML
+      document.querySelector('.content-replied-modal').querySelector('.post').querySelector('.post__body').querySelector('.post__header').innerHTML = id.parentElement.parentElement.parentElement.querySelector('.post__body').querySelector('.post__header').innerHTML
+      document.querySelector('.content-replied-modal').querySelector('.post').querySelector('.post__body').querySelector('.post__img').innerHTML = id.parentElement.parentElement.parentElement.querySelector('.post__body').querySelector('.post__img').innerHTML
+      document.querySelector('.content-replying-modal').querySelector('.tag-name-modal').innerHTML = id.parentElement.parentElement.parentElement.querySelector('.post__body').querySelector('.post__headerSpecial').innerText.slice(9)
+      //fix css
+      document.querySelector('.content-replied-modal').querySelector('.post').classList.add('modal-css')
+
+      const modal = document.querySelector('.js-modal')
+      const modalContainer = document.querySelector('.js-modal-container')
+      const modalClose = document.querySelector('.js-modal-close')
+
+      // Open modal comment 
+      modal.classList.add('open')
+
+      //Hàm hiển thị form modal comment (thêm class 'open' của modal)
+      function showModalComment() {
+        modal.classList.add('open')
+      }
+      //Hàm ẩn form modal comment (bỏ class 'open' khỏi modal)
+      function hideModalComment() {
+        modal.classList.remove('open')
+      }
+
+      // Nghe event nhấn vào comment
+      // buyBtns.addEventListener('click', showModalComment)
+
+      //Nghe hành vi click vào nút close của modal comment
+      modalClose.addEventListener('click', hideModalComment)
+      //Nghe hành vi click vào nền của web
+      modal.addEventListener('click', hideModalComment)
+      //Nhấp vào khung modal comment thì sẽ không bị thoát ra
+      modalContainer.addEventListener('click', function (event) {
+        event.stopPropagation()
+      })
+    }
+
+    function clickSubmitCommentForm(id) {
+
+      document.querySelector('.js-modal').classList.remove('open')
+
+      document.querySelector(".list__posts").innerHTML = `
+                  <div class="post">
+                    <div class="post__avatar">
+                      <img
+                        src="https://techkalzen.com/wp-content/uploads/2019/12/Zenitsu-Agatsuma-Kimetsu-no-Yaiba.jpg"
+                        alt=""
+                      />
+                    </div>
+                    
+                    <div class="post__body">
+                      <div class="post__header">
+                        <div class="post__headerText">
+                          <h3>
+                            ptphat
+                            <span class="post__headerSpecial">
+                              <span class="material-icons post__badge"> verified </span>
+                              @ptphat
+                            </span>
+                          </h3>
+                        </div>
+                        <div class="post__headerDescription">
+                          <p>replying to <a class="tag-name-modal" href="">${id.parentElement.parentElement.parentElement.querySelector('.tag-name-modal').innerHTML}</a></p> 
+                          <p>${id.parentElement.parentElement.querySelector("input").value}</p>
+                        </div>
+                      </div>
+                      <div class="post__img">
+                        <img
+                          src=""
+                          alt=""
+                        />
+                      </div>
+
+                      <div class="post__footer">
+                        <div class="post__action favorite-post" onclick="clickEmotion(this)">
+                          <div class="test" >
+                            <span class="material-symbols-outlined flex none emptyHeart"> favorite </span>
+                            <svg class="none redHeart" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve" style="margin-right: 4px">
+                              <defs>
+                              </defs>
+                              <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                                <path d="M 7.486 13.502 c 9.982 -9.982 26.165 -9.982 36.147 0 L 45 14.869 l 0 0 c 6.895 22.882 6.259 47.092 0 72.294 L 26.927 69.089 c 0 0 0 0 0 0 l -19.44 -19.44 C -2.495 39.667 -2.495 23.484 7.486 13.502 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(214,73,62); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                <path d="M 82.514 13.502 c -9.982 -9.982 -26.165 -9.982 -36.147 0 L 45 14.869 l 0 0 v 72.294 l 18.073 -18.073 c 0 0 0 0 0 0 l 19.44 -19.44 C 92.495 39.667 92.495 23.484 82.514 13.502 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(215,90,74); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                              </g>
+                            </svg>
+                          </div>
+                          <h3>${""}</h3>
+                        </div>
+                        <div class="post__action comment-post" onclick="clickComment(this)">
+                          <span class="material-symbols-outlined "> mode_comment </span>
+                          <h3>${""}</h3>
+                        </div>
+                        <div class="post__action publish-post">
+                          <span class="material-symbols-outlined "> publish </span>
+                          <h3>${""}</h3>
+                        </div>
+                      
+                      </div>
+                    </div>
+                  </div>
+                  ` + document.querySelector(".list__posts").innerHTML
+      id.parentElement.parentElement.parentElement.querySelector("input").value = null
+    }
+    //handle post 
+    function clickPost(id) {
+
+      document.querySelector(".list__posts").innerHTML = `
+                  <div class="post">
+                    <div class="post__avatar">
+                      <img
+                        src="https://techkalzen.com/wp-content/uploads/2019/12/Zenitsu-Agatsuma-Kimetsu-no-Yaiba.jpg"
+                        alt=""
+                      />
+                    </div>
+                    
+                    <div class="post__body">
+                      <div class="post__header">
+                        <div class="post__headerText">
+                          <h3>
+                            ptphat
+                            <span class="post__headerSpecial">
+                              <span class="material-icons post__badge"> verified </span>
+                              @ptphat
+                            </span>
+                          </h3>
+                        </div>
+                        <div class="post__headerDescription">
+                          <p>${id.parentElement.parentElement.querySelector("input").value}</p>
+                        </div>
+                      </div>
+                      <div class="post__img">
+                        <img
+                          src=""
+                          alt=""
+                        />
+                      </div>
+
+                      <div class="post__footer">
+                        <div class="post__action favorite-post" onclick="clickEmotion(this)">
+                          <div class="test" >
+                            <span class="material-symbols-outlined flex none emptyHeart"> favorite </span>
+                            <svg class="none redHeart" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve" style="margin-right: 4px">
+                              <defs>
+                              </defs>
+                              <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                                <path d="M 7.486 13.502 c 9.982 -9.982 26.165 -9.982 36.147 0 L 45 14.869 l 0 0 c 6.895 22.882 6.259 47.092 0 72.294 L 26.927 69.089 c 0 0 0 0 0 0 l -19.44 -19.44 C -2.495 39.667 -2.495 23.484 7.486 13.502 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(214,73,62); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                <path d="M 82.514 13.502 c -9.982 -9.982 -26.165 -9.982 -36.147 0 L 45 14.869 l 0 0 v 72.294 l 18.073 -18.073 c 0 0 0 0 0 0 l 19.44 -19.44 C 92.495 39.667 92.495 23.484 82.514 13.502 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(215,90,74); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                              </g>
+                            </svg>
+                          </div>
+                          <h3>${""}</h3>
+                        </div>
+                        <div class="post__action comment-post" onclick="clickComment(this)">
+                          <span class="material-symbols-outlined "> mode_comment </span>
+                          <h3>${""}</h3>
+                        </div>
+                        <div class="post__action publish-post">
+                          <span class="material-symbols-outlined "> publish </span>
+                          <h3>${""}</h3>
+                        </div>
+                      
+                      </div>
+                    </div>
+                  </div>
+                  ` + document.querySelector(".list__posts").innerHTML
+      id.parentElement.parentElement.querySelector("input").value = null
+    }
+  </script>
+
 </body>
-
 
 </html>

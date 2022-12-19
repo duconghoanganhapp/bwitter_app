@@ -42,3 +42,13 @@ class FollowersCount(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     def __str__(self):
         return self.user
+
+class Comment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    caption = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='cmt_images')
+
+    def __str__(self):
+        return self.caption

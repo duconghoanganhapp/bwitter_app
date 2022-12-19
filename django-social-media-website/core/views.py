@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Post, LikePost, FollowersCount
+from .models import Profile, Post, LikePost, FollowersCount, Comment
 from itertools import chain
 import random
 import uuid
@@ -13,16 +13,9 @@ import uuid
 def index(request):
     user_object = User.objects.get(username=request.user.username)
     user_profile = Profile.objects.get(user=user_object)
-    all_profile = Profile.objects.all().values()
-    print(all_profile)
     user_following_lists = []
     feed = []
-    avatar_user_post = {}
-    
-    # get post avatar user
-    # for x in all_profile:
-    #     avatar_user_post[str(x.user)] = x.profileimg.url
-    # print(avatar_user_post)
+    comment = []
 
     user_following = FollowersCount.objects.filter(follower=request.user.username)
     
@@ -33,8 +26,12 @@ def index(request):
     for user_following_list in user_following_lists:
         feed_lists = Post.objects.filter(profile=user_following_list)
         feed.append(feed_lists)
+        comment_lists = Comment.objects.filter(profile=user_following_list)
+        comment.append(comment_lists)
+
 
     feed_list = list(chain(*feed))
+    comment_list = list(chain(*comment))
     
     # get post_id of post which current user liked 
     like_posts_lists = LikePost.objects.filter(username=request.user.username)
@@ -66,18 +63,18 @@ def index(request):
 
     suggestions_username_profile_list = list(chain(*username_profile_list))
 
-    return render(request, 'index2.html', {'user_profile': user_profile, 'posts':feed_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4], 'like_posts_list':like_posts_list})
+    return render(request, 'index.html', {'user_profile': user_profile, 'posts':feed_list, 'comment_list':comment_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4], 'like_posts_list':like_posts_list})
 
 @login_required(login_url='signin')
 def upload(request):
-
     if request.method == 'POST':
-        user = request.user.username
+        post = request.user.username
+        profile = Profile.objects.get(id_user=request.user.id)
         image = request.FILES.get('image_upload')
         caption = request.POST['caption']
 
-        new_post = Post.objects.create(user=user, image=image, caption=caption)
-        new_post.save()
+        # new_cmt = Comment.objects.create(post=post, image=image, caption=caption, profile=profile)
+        # new_cmt.save()
 
         return redirect('/')
     else:
