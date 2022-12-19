@@ -1,0 +1,4 @@
+django
+.DS_Store
+*.pyc
+django-social-media-website/venv
