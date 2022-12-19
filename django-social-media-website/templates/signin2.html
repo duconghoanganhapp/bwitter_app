@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link href="{% static 'favicon.png' %}" rel="icon" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bwitter</title>
+  <!-- <link rel="stylesheet" href="{% static 'assets/css/icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/uikit.css' %}">
+    
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}"> -->
+  <link rel="stylesheet" href="{% static 'assets/css/style2.css' %}">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <!-- Search Icon:https://fonts.google.com/icons?icon.query=share -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+    crossorigin="anonymous" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <div class="wrapper">
+
+        <!-- sidebar starts -->
+        <div class="sidebar">
+            <i class="fab fa-twitter"></i>
+
+            <div class="sidebarOption active">
+                <div class="sub_sidebarOption">
+                    <span class="material-icons"> search </span>
+                    <h2>Explore</h2>
+                </div>
+            </div>
+
+            <div class="sidebarOption">
+                <div class="sub_sidebarOption">
+                    <span class="material-icons"> settings </span>
+                    <h2>Setting</h2>
+                </div>
+            </div>
+        </div>
+        <!-- sidebar ends -->
+
+        <!-- feed starts -->
+        <div class="feed">
+            <div class="flex">
+                <div class="widgets__input" style="width: 100%;">
+                    <span class="material-icons widgets__searchIcon"> search </span>
+                    <input type="text" placeholder="Search Bwitter" />
+                </div>
+                <span class="setting material-icons"> settings </span>
+            </div>
+        </div>
+        <!-- feed ends -->
+
+        <!-- widgets starts -->
+        <div class="widgets">
+            <div class="widgets__input register">
+                <h3>New to Twitter?</h3>
+                <p>Sign up now to get your own personalized timeline!</p>
+                <h3 class="register-btn" onclick="clickSign(this)">Sign up</h3>
+                <p>By signing up, you agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>, including <a href="#">Cookie Use</a>.</p>
+            </div>
+
+            <div class="widgets__widgetContainer rules">
+                <div class="rules">
+                    <div><a href="#">Terms of Service</a><a href="#">Privacy Policy</a><a href="#">Cookie Use</a></div>
+                    <div><a href="">Accessibility</a><a href="">Ads info</a><a href="">More</a></div>
+                    <div><p>© 2022 Twitter, Inc.</p></div>
+                </div>
+            </div>
+        </div>
+        <!-- widgets ends -->
+    </div>
+
+    <footer id="footer">
+        <div class="footer-container flex">
+            <div class="footer-content">
+                <h2>Don’t miss what’s happening</h2>
+                <p>People on Twitter are the first to know.</p>
+            </div>
+            <div class="sign signin-btn" onclick="clickSign(this)"><b>Log in</b></div>
+            <div class="sign signup-btn" onclick="clickSign(this)"><b>Sign up</b></div>
+        </div>
+    </footer>
+
+    <div class="modal js-modal">
+        <div class="modal-container js-modal-container">
+            <header class="modal-header">
+              <span class="modal-close js-modal-close material-symbols-outlined">close</span>
+            </header>
+            <div class="sign-form">
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Handle event signin/signup button-->
+    <script>
+        function clickSign(id) {
+        console.log(id)
+        
+        if( id == document.querySelector('.signin-btn')){
+            document.querySelector('.sign-form').innerHTML = `
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <i class="fab fa-twitter"></i>
+                    <h2>Sign in to Twitter</h2>
+                    <input type="text" name="username" placeholder="Username" class="signin-input signin-username"><br>
+                    <input type="password" name="password" placeholder="Password" class="signin-input signin-password"><br>
+                    <button type="submit" class="sidebar__tweet cursor">Login</button>
+                </form>
+            `
+        }    
+        else {
+            document.querySelector('.sign-form').innerHTML = `
+                <form action="/signup" method="POST">
+                    {% csrf_token %}
+                    <i class="fab fa-twitter"></i>
+                    <h2>Join Twitter today</h2>
+                    <input type="text" name="username" placeholder="Username" class="signin-input signin-username"><br>
+                    <input type="email" name="email" placeholder="Email" class="signin-input signin-username"><br>
+                    <input type="password" name="password" placeholder="Password" class="signin-input signin-username"><br>
+                    <input type="password" name="password2" placeholder="Confirm Password" class="signin-input signin-username"><br>
+                    
+                    <button type="submit" class="sidebar__tweet cursor">Sign Up</button>
+                </form>
+            `
+        } 
+        const modal = document.querySelector('.js-modal')
+        const modalContainer = document.querySelector('.js-modal-container')
+        const modalClose = document.querySelector('.js-modal-close')
+
+        // Open modal comment 
+        modal.classList.add('open')
+
+        //Hàm hiển thị form modal comment (thêm class 'open' của modal)
+        function showModalComment(){
+            modal.classList.add('open')
+        }
+        //Hàm ẩn form modal comment (bỏ class 'open' khỏi modal)
+        function hideModalComment(){
+            modal.classList.remove('open')
+        }
+        
+        // Nghe event nhấn vào comment
+        // buyBtns.addEventListener('click', showModalComment)
+        
+        //Nghe hành vi click vào nút close của modal comment
+        modalClose.addEventListener('click', hideModalComment)
+        //Nghe hành vi click vào nền của web
+        modal.addEventListener('click', hideModalComment)
+        //Nhấp vào khung modal comment thì sẽ không bị thoát ra
+        modalContainer.addEventListener('click', function(event){
+            event.stopPropagation()
+        })
+      }
+    </script>
+</body>
+</html>

@@ -160,13 +160,15 @@ def follow(request):
     if request.method == 'POST':
         follower = request.POST['follower']
         user = request.POST['user']
+        print(user)
+         user_profile = Profile.objects.get(id_user=user.id)
 
         if FollowersCount.objects.filter(follower=follower, user=user).first():
             delete_follower = FollowersCount.objects.get(follower=follower, user=user)
             delete_follower.delete()
             return redirect('/profile/'+user)
         else:
-            new_follower = FollowersCount.objects.create(follower=follower, user=user)
+            new_follower = FollowersCount.objects.create(follower=follower, user=user, profile=user_profile)
             new_follower.save()
             return redirect('/profile/'+user)
     else:
@@ -211,10 +213,10 @@ def signup(request):
         if password == password2:
             if User.objects.filter(email=email).exists():
                 messages.info(request, 'Email Taken')
-                return redirect('signup')
+                return redirect('signin')
             elif User.objects.filter(username=username).exists():
                 messages.info(request, 'Username Taken')
-                return redirect('signup')
+                return redirect('signin')
             else:
                 user = User.objects.create_user(username=username, email=email, password=password)
                 user.save()
@@ -230,10 +232,10 @@ def signup(request):
                 return redirect('settings')
         else:
             messages.info(request, 'Password Not Matching')
-            return redirect('signup')
+            return redirect('signin')
         
     else:
-        return render(request, 'signup.html')
+        return render(request, 'signin2.html')
 
 def signin(request):
     
@@ -251,7 +253,7 @@ def signin(request):
             return redirect('signin')
 
     else:
-        return render(request, 'signin.html')
+        return render(request, 'signin2.html')
 
 @login_required(login_url='signin')
 def logout(request):
