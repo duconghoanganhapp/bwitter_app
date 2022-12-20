@@ -105,10 +105,9 @@
                         </a>
                     </div>
                     <div class="user--reply-tabs">
-                        <form action="#" method="get" id="user_reply" class="tab-form">
-                            <input type="hidden" value="{{ profile.username }}">
-                            <input type="submit" class="tab-btn" value="Reply" onclick="showTabContent(1)">
-                        </form>
+                        <a href="/reply">
+                            Reply
+                        </a>
                     </div>
                     <div class="user-liked--tweet-tabs">
                         Likes
@@ -202,6 +201,7 @@
                     {% endfor %}
                     {% endif %}
             
+                    {% if flag_tag == '0' or flag_tag == '1' %}
                     {% for post in posts reversed %}
                     <div class="post">
                       <div class="post__avatar">
@@ -277,6 +277,7 @@
                       </div>
                     </div>
                     {% endfor %}
+                    {% endif %}
                   </div>
                   <!-- post ends -->
                 </div>
