@@ -227,5 +227,5 @@
 }
 
 .post {
-    width: 545px;
+    width: 545px !important;
 }

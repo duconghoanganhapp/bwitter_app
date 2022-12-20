@@ -36,7 +36,7 @@
             <div class="profile-image__btns">
                 <div class="profile-image__div">
                     {% if user_profile.profileimg.url %}
-                        <img src="{{ user_profile.profileimg.url }}" alt="Profile Image could not load"
+                        <img style="min-width: 107px;" src="{{ user_profile.profileimg.url }}" alt="Profile Image could not load"
                              class="profile-image">
                     {% else %}
                         <img src="https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640"
