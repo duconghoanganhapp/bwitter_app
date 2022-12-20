@@ -1,184 +1,533 @@
+{% extends "base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block title %}Profile - {{ user_profile.user.username }}{% endblock title %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style1.css' %}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <!-- Search Icon:https://fonts.google.com/icons?icon.query=share -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+{% endblock css %}
+{% block content %}
+    <div class="main-profile__section">
+        <div class="main-profile__header--content">
+            <h5>{{ user_profile.user.username }}</h5>
+            <p class="tweet-counts">
+                {% if user_post_length == 0 %}
+                    No Tweet
+                {% elif user_post_length == 1 %}
+                    1 Tweet
+                {% else %}
+                    {{ user_post_length }} Tweets
+                {% endif %}
+            </p>
+        </div>
+        <div class="main-profile__section-coverimage">
+            <img class="cover-image" src="{% static 'images/resources/timeline-1.jpg' %}"
+                 alt="Cover Image could not load">
+
+            <div class="profile-image__btns">
+                <div class="profile-image__div">
+                    {% if user_profile.profileimg.url %}
+                        <img src="{{ user_profile.profileimg.url }}" alt="Profile Image could not load"
+                             class="profile-image">
+                    {% else %}
+                        <img src="https://twirpz.files.wordpress.com/2015/06/twitter-avi-gender-balanced-figure.png?w=640"
+                             alt="Profile Image could not load" class="profile-image">
+                    {% endif %}
+                </div>
+                {% if user_profile.user.username == user.username %}
+                    <div class="edit--button">
+                        <button style="outline: none;" class="edit-profile-btn" onclick="location.href='/settings'">Edit
+                            Profile
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="edit--button">
+                        <form action="/follow" method="POST" id="follow_form">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ user.username }}" name="follower"/>
+                            <input type="hidden" value="{{ user_object.username }}" name="user"/>
+
+                            <a data-ripple="">
+                                <button type="submit" class="edit-profile-btn"
+                                        id="follow_btn">{{ button_text }}</button>
+                            </a>
+                        </form>
+                    </div>
+                    <div class="follow-progress-bar" id="spinner">
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="profile-content--div">
+            <div class="username--full__name">
+                <h5 class="full--name--content">
+                    {{ user_profile.user.username }}
+                </h5>
+                <span>@{{ user_profile.user.username }}</span>
+            </div>
+            <div class="user--twitter_bio mt-3">
+                <p>{{ user_profile.bio }}</p>
+            </div>
+
+            <div class="link-calender--icon">
+                <div class="link--icon__url flex--item">
+                    <img class="link-icons" src="{% static 'images/icons/calender.svg' %}" alt="link icon">
+                    <span class="date--joined">Joined {{ user.date_joined|date:"F Y"}}</span>
+                </div>
+            </div>
+            <div class="following-follwer__list mt-2">
+                <div class="link--icon__url flex--item mr-5">
+                    <span class="follow-count" id="following-count">{{ user_following }}</span> <span
+                        class="follow-text"> Following</span>
+                </div>
+                <div class="link--icon__url flex--item">
+                    <span class="follow-count" id="followers-count">{{ user_followers }}</span><span
+                        class="follow-text"> Followers</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile_detail--tabs">
+            <div class="tab--container">
+                <div class="tab--form_container">
+                    <div class="user_tweets--tabs">
+                        <a href="/tweets">
+                            Tweets
+                        </a>
+                    </div>
+                    <div class="user--reply-tabs">
+                        <form action="#" method="get" id="user_reply" class="tab-form">
+                            <input type="hidden" value="{{ profile.username }}">
+                            <input type="submit" class="tab-btn" value="Reply" onclick="showTabContent(1)">
+                        </form>
+                    </div>
+                    <div class="user-liked--tweet-tabs">
+                        Likes
+                    </div>
+                    <div class="user--media-tabs">
+                        <form action="#" method="get" id="user_media" class="tab-form">
+                            <input type="hidden" value="{{ profile.username }}">
+                            <input type="submit" class="tab-btn" value="Media" onclick="showTabContent(3)">
+                        </form>
+                    </div>
+                </div>
+                <div class="tweets-tab--content tab-panels" id='tweet-tab'>
+                    <div class="spinner-box" style="width: 100%; text-align: center;">
+                        <div class="spinner-border text-primary" id="tab-spinner-1" role="status"></div>
+                    </div>
+
+                </div>
+                <div class="reply-tab--content tab-panels">TAB 2</div>
+                <div class="likes-tab--content tab-panels" id="like_tab">
+                    <div class="spinner-box" style="width: 100%; text-align: center;">
+                        <div class="spinner-border text-primary" id="tab-spinner-3" role="status"></div>
+                    </div>
+                </div>
+                <div class="media-tab--content tab-panels">TAB 4</div>
+            </div>
+
+        </div>
+
+        <div>
+            <div class="wrapper">
+                  <!-- post starts -->
+                  <div class="list__posts">
+                    {% if flag_tag == '2' %}
+                    {% for comment in comment_list reversed %}
+                    <div class="post">
+                      <div class="post__avatar" style="text-align: -webkit-center;">
+                        <img src="{{ comment.profile.profileimg.url }}" alt="" />
+                        <div style="    height: auto; min-height:45px;
+                        width: 0px;
+                        background-color: #a5a4a4;
+                        border: 1px solid #a5a4a4;"></div>
+                        <img src="{{ user_profile.profileimg.url }}" alt="" />
+                      </div>
+            
+                      <div class="post__body">
+                        <div class="post__header">
+                          <div class="post__headerText">
+                            <h3>
+                              <a href="/profile/{{comment.profile.user.username}}">
+                                {{comment.profile.user.username}}
+                                <span class="post__headerSpecial">
+                                  <span class="material-icons post__badge"> verified </span>
+                                  @{{comment.profile.user.username}}
+                                </span>
+                              </a>
+                            </h3>
+                          </div>
+                          <div class="post__headerDescription">
+                            <p>{{comment.post.caption}}</p>
+                          </div>
+                        </div>
+            
+                        <div style="height: auto;     min-height: 45px;            "></div>
+            
+                        <div class="post__header">
+                          <div class="post__headerText">
+                            <h3>
+                              <a href="/profile/{{user_profile.user.username}}">
+                                {{user_profile.user.username}}
+                                <span class="post__headerSpecial">
+                                  <span class="material-icons post__badge"> verified </span>
+                                  @{{user_profile.user.username}}
+                                </span>
+                              </a>
+                            </h3>
+                          </div>
+                          <div class="post__headerDescription">
+                            <p>{{comment.caption}}</p>
+                          </div>
+                        </div>
+                        <div uk-lightbox class="post__img">
+                          {% if comment.image.url != null %}
+                          <a href="{{comment.image.url}}">
+                            <img src="{{comment.image.url}}" alt="" style="max-width: 80px;">
+                          </a>
+                          {% endif %}
+                        </div>
+                      </div>
+            
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+            
+                    {% for post in posts reversed %}
+                    <div class="post">
+                      <div class="post__avatar">
+                        <img src="{{ post.profile.profileimg.url }}" alt="" />
+                      </div>
+            
+                      <div class="post__body">
+                        <div class="post__header">
+                          <div class="post__headerText">
+                            <h3>
+                              <a href="/profile/{{post.user}}">
+                                {{post.user}}
+                                <span class="post__headerSpecial">
+                                  <span class="material-icons post__badge"> verified </span>
+                                  @{{post.user}}
+                                </span>
+                              </a>
+                            </h3>
+                          </div>
+                          <div class="post__headerDescription">
+                            <p>{{post.caption}}</p>
+                          </div>
+                        </div>
+            
+                        <div uk-lightbox class="post__img">
+                          {% if post.image.url != null %}
+                          <a href="{{post.image.url}}">
+                            <img src="{{post.image.url}}" alt="">
+                          </a>
+                          {% endif %}
+                        </div>
+            
+                        <div class="post__footer">
+                          <div class="post__action favorite-post">
+                            <a href="/like-post?post_id={{post.id}}" class="flex">
+                              <div class="test">
+                                <!-- <p> {{post.id}} vs {{like_posts_list}}</p> -->
+                                {% if post.id in like_posts_list %}
+                                <svg class="flex none redHeart" xmlns="http://www.w3.org/2000/svg"
+                                  xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20"
+                                  viewBox="0 0 256 256" xml:space="preserve" style="margin-right: 4px">
+                                  <defs>
+                                  </defs>
+                                  <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
+                                    transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+                                    <path
+                                      d="M 7.486 13.502 c 9.982 -9.982 26.165 -9.982 36.147 0 L 45 14.869 l 0 0 c 6.895 22.882 6.259 47.092 0 72.294 L 26.927 69.089 c 0 0 0 0 0 0 l -19.44 -19.44 C -2.495 39.667 -2.495 23.484 7.486 13.502 z"
+                                      style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(214,73,62); fill-rule: nonzero; opacity: 1;"
+                                      transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                    <path
+                                      d="M 82.514 13.502 c -9.982 -9.982 -26.165 -9.982 -36.147 0 L 45 14.869 l 0 0 v 72.294 l 18.073 -18.073 c 0 0 0 0 0 0 l 19.44 -19.44 C 92.495 39.667 92.495 23.484 82.514 13.502 z"
+                                      style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(215,90,74); fill-rule: nonzero; opacity: 1;"
+                                      transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                  </g>
+                                </svg>
+                                {% else %}
+                                <span class="material-symbols-outlined flex none emptyHeart"> favorite </span>
+                                {% endif %}
+            
+                              </div>
+                              <p>{{post.no_of_likes}}</p>
+                            </a>
+                          </div>
+                          <div class="post__action comment-post" onclick="clickComment(this)">
+                            <span class="material-symbols-outlined "> mode_comment </span>
+                            <h3><!-- numbers of comments --></h3>
+                          </div>
+                          <div class="post__action publish-post">
+                            <span class="material-symbols-outlined "> publish </span>
+                            <h3><!-- numbers of shares --></h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                  <!-- post ends -->
+                </div>
+                
+              </div>
+              <script>
+                // handle list trends
+                $(document).ready(function () {
+                  maxTop = 1000
+                  keyTop = -1
+                  for (let i = 0; i < 3; i++) {
+                    // FETCHING DATA FROM JSON FILE
+                    // $.getJSON("main.json", function (data){
+                    //   var trends = '';
+                    //   var maxLike = data[0]["like"]
+                    //   var keymax = 0
+            
+                    //   $.each(data, function (key, value) {
+            
+                    //     // console.log(data[0]["like"])
+            
+                    //     if(maxLike < value["like"] && value["like"] < maxTop){
+                    //       maxLike = value["like"]
+            
+                    //       keymax = key
+                    //     }
+                    //     // console.log(value["like"])
+                    //     // console.log(keymax)
+                    //   });
+                    //   maxTop = maxLike
+                    //   keyTop = keymax
+                    //   trends += `
+                    //       <div class="subtrend">
+                    //         <p>Trending in ${data[keymax]["contry"]}</p>
+                    //         <h1>${data[keymax]["content"]}</h1>
+                    //       </div>
+                    //     `
+                    //   $('.handle-list-trends').append(trends);
+                    // });
+                  }
+                });
+            
+                //handle emotional clicking 1
+                function clickEmotion(id) {
+                  const emptyHeart = id.querySelector(".emptyHeart")
+                  emptyHeart.classList.toggle('flex')
+                  const redHeart = id.querySelector(".redHeart")
+                  redHeart.classList.toggle('flex')
+            
+                  id.classList.toggle('bg-pink')
+                }
+            
+                //handle emotional clicking 2
+                // function clickEmotion1(id) {
+                //   console.log(id)
+                //   console.log(typeof(id))
+                //   const emptyHeart = id
+                //   emptyHeart.classList.remove('flex')
+                //   const redHeart = id.parentElement.querySelector(".redHeart")
+                //   redHeart.classList.add('flex')
+                //   const Emotion = id.parentElement.parentElement
+                //   Emotion.classList.add('bg-pink')
+                // }
+                // function clickEmotion2(id) {
+                //   console.log(id)
+                //   console.log(typeof(id))
+                //   const emptyHeart = id.parentElement.querySelector(".emptyHeart")
+                //   emptyHeart.classList.add('flex')
+                //   const redHeart = id
+                //   redHeart.classList.remove('flex')
+                //   const Emotion = id.parentElement.parentElement
+                //   Emotion.classList.remove('bg-pink')
+                // }
+            
+                let currentComment
+                // handle comment
+                function clickComment(id) {
+                  // const buyBtns = id
+                  currentComment = id
+            
+                  //load elements from post to modal
+                  document.querySelector('.content-replied-modal').querySelector('.post').querySelector('.post__avatar').innerHTML = id.parentElement.parentElement.parentElement.querySelector('.post__avatar').innerHTML
+                  document.querySelector('.content-replied-modal').querySelector('.post').querySelector('.post__body').querySelector('.post__header').innerHTML = id.parentElement.parentElement.parentElement.querySelector('.post__body').querySelector('.post__header').innerHTML
+                  document.querySelector('.content-replied-modal').querySelector('.post').querySelector('.post__body').querySelector('.post__img').innerHTML = id.parentElement.parentElement.parentElement.querySelector('.post__body').querySelector('.post__img').innerHTML
+                  document.querySelector('.content-replying-modal').querySelector('.tag-name-modal').innerHTML = id.parentElement.parentElement.parentElement.querySelector('.post__body').querySelector('.post__headerSpecial').innerText.slice(9)
+                  //fix css
+                  document.querySelector('.content-replied-modal').querySelector('.post').classList.add('modal-css')
+            
+                  const modal = document.querySelector('.js-modal')
+                  const modalContainer = document.querySelector('.js-modal-container')
+                  const modalClose = document.querySelector('.js-modal-close')
+            
+                  // Open modal comment 
+                  modal.classList.add('open')
+            
+                  //Hàm hiển thị form modal comment (thêm class 'open' của modal)
+                  function showModalComment() {
+                    modal.classList.add('open')
+                  }
+                  //Hàm ẩn form modal comment (bỏ class 'open' khỏi modal)
+                  function hideModalComment() {
+                    modal.classList.remove('open')
+                  }
+            
+                  // Nghe event nhấn vào comment
+                  // buyBtns.addEventListener('click', showModalComment)
+            
+                  //Nghe hành vi click vào nút close của modal comment
+                  modalClose.addEventListener('click', hideModalComment)
+                  //Nghe hành vi click vào nền của web
+                  modal.addEventListener('click', hideModalComment)
+                  //Nhấp vào khung modal comment thì sẽ không bị thoát ra
+                  modalContainer.addEventListener('click', function (event) {
+                    event.stopPropagation()
+                  })
+                }
+            
+                function clickSubmitCommentForm(id) {
+            
+                  document.querySelector('.js-modal').classList.remove('open')
+            
+                  document.querySelector(".list__posts").innerHTML = `
+                              <div class="post">
+                                <div class="post__avatar">
+                                  <img
+                                    src="https://techkalzen.com/wp-content/uploads/2019/12/Zenitsu-Agatsuma-Kimetsu-no-Yaiba.jpg"
+                                    alt=""
+                                  />
+                                </div>
+                                
+                                <div class="post__body">
+                                  <div class="post__header">
+                                    <div class="post__headerText">
+                                      <h3>
+                                        ptphat
+                                        <span class="post__headerSpecial">
+                                          <span class="material-icons post__badge"> verified </span>
+                                          @ptphat
+                                        </span>
+                                      </h3>
+                                    </div>
+                                    <div class="post__headerDescription">
+                                      <p>replying to <a class="tag-name-modal" href="">${id.parentElement.parentElement.parentElement.querySelector('.tag-name-modal').innerHTML}</a></p> 
+                                      <p>${id.parentElement.parentElement.querySelector("input").value}</p>
+                                    </div>
+                                  </div>
+                                  <div class="post__img">
+                                    <img
+                                      src=""
+                                      alt=""
+                                    />
+                                  </div>
+            
+                                  <div class="post__footer">
+                                    <div class="post__action favorite-post" onclick="clickEmotion(this)">
+                                      <div class="test" >
+                                        <span class="material-symbols-outlined flex none emptyHeart"> favorite </span>
+                                        <svg class="none redHeart" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve" style="margin-right: 4px">
+                                          <defs>
+                                          </defs>
+                                          <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                                            <path d="M 7.486 13.502 c 9.982 -9.982 26.165 -9.982 36.147 0 L 45 14.869 l 0 0 c 6.895 22.882 6.259 47.092 0 72.294 L 26.927 69.089 c 0 0 0 0 0 0 l -19.44 -19.44 C -2.495 39.667 -2.495 23.484 7.486 13.502 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(214,73,62); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                            <path d="M 82.514 13.502 c -9.982 -9.982 -26.165 -9.982 -36.147 0 L 45 14.869 l 0 0 v 72.294 l 18.073 -18.073 c 0 0 0 0 0 0 l 19.44 -19.44 C 92.495 39.667 92.495 23.484 82.514 13.502 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(215,90,74); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                          </g>
+                                        </svg>
+                                      </div>
+                                      <h3>${""}</h3>
+                                    </div>
+                                    <div class="post__action comment-post" onclick="clickComment(this)">
+                                      <span class="material-symbols-outlined "> mode_comment </span>
+                                      <h3>${""}</h3>
+                                    </div>
+                                    <div class="post__action publish-post">
+                                      <span class="material-symbols-outlined "> publish </span>
+                                      <h3>${""}</h3>
+                                    </div>
+                                  
+                                  </div>
+                                </div>
+                              </div>
+                              ` + document.querySelector(".list__posts").innerHTML
+                  id.parentElement.parentElement.parentElement.querySelector("input").value = null
+                }
+                //handle post 
+                function clickPost(id) {
+            
+                  document.querySelector(".list__posts").innerHTML = `
+                              <div class="post">
+                                <div class="post__avatar">
+                                  <img
+                                    src="https://techkalzen.com/wp-content/uploads/2019/12/Zenitsu-Agatsuma-Kimetsu-no-Yaiba.jpg"
+                                    alt=""
+                                  />
+                                </div>
+                                
+                                <div class="post__body">
+                                  <div class="post__header">
+                                    <div class="post__headerText">
+                                      <h3>
+                                        ptphat
+                                        <span class="post__headerSpecial">
+                                          <span class="material-icons post__badge"> verified </span>
+                                          @ptphat
+                                        </span>
+                                      </h3>
+                                    </div>
+                                    <div class="post__headerDescription">
+                                      <p>${id.parentElement.parentElement.querySelector("input").value}</p>
+                                    </div>
+                                  </div>
+                                  <div class="post__img">
+                                    <img
+                                      src=""
+                                      alt=""
+                                    />
+                                  </div>
+            
+                                  <div class="post__footer">
+                                    <div class="post__action favorite-post" onclick="clickEmotion(this)">
+                                      <div class="test" >
+                                        <span class="material-symbols-outlined flex none emptyHeart"> favorite </span>
+                                        <svg class="none redHeart" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="0 0 256 256" xml:space="preserve" style="margin-right: 4px">
+                                          <defs>
+                                          </defs>
+                                          <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                                            <path d="M 7.486 13.502 c 9.982 -9.982 26.165 -9.982 36.147 0 L 45 14.869 l 0 0 c 6.895 22.882 6.259 47.092 0 72.294 L 26.927 69.089 c 0 0 0 0 0 0 l -19.44 -19.44 C -2.495 39.667 -2.495 23.484 7.486 13.502 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(214,73,62); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                            <path d="M 82.514 13.502 c -9.982 -9.982 -26.165 -9.982 -36.147 0 L 45 14.869 l 0 0 v 72.294 l 18.073 -18.073 c 0 0 0 0 0 0 l 19.44 -19.44 C 92.495 39.667 92.495 23.484 82.514 13.502 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(215,90,74); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                          </g>
+                                        </svg>
+                                      </div>
+                                      <h3>${""}</h3>
+                                    </div>
+                                    <div class="post__action comment-post" onclick="clickComment(this)">
+                                      <span class="material-symbols-outlined "> mode_comment </span>
+                                      <h3>${""}</h3>
+                                    </div>
+                                    <div class="post__action publish-post">
+                                      <span class="material-symbols-outlined "> publish </span>
+                                      <h3>${""}</h3>
+                                    </div>
+                                  
+                                  </div>
+                                </div>
+                              </div>
+                              ` + document.querySelector(".list__posts").innerHTML
+                  id.parentElement.parentElement.querySelector("input").value = null
+                }
+              </script>
+        </div>
+
+    </div>
 
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-	<title>Profile - {{user_profile.user.username}}</title>
-   <!-- <link rel="icon" href="images/fav.png" type="image/png" sizes="16x16"> -->
-    
-    <link rel="stylesheet" href="{% static 'css/main.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/color.css' %}">
-    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
-
-</head>
-<body>
-<!--<div class="se-pre-con"></div>-->
-<div class="theme-layout">
-	
-	</div>
-	
-	<section>
-			<div class="feature-photo">
-				<figure><img src="{% static 'images/resources/timeline-1.jpg' %}" alt=""></figure>
-				<form action="/follow" method="POST">
-					{% csrf_token %}
-					<div class="add-btn">
-					<span style="color: white; font-size: 27px; margin-right: 493px;"><b><u><a href="/">Home</a></u></b></span>
-					
-					{% if user_post_length == 0 %}
-					<span style="color: white; font-size: 27px;"><b>No Post</b></span>
-					{% elif user_post_length == 1 %}
-					<span style="color: white; font-size: 27px;"><b>{{user_post_length}} Post</b></span>
-					{% else %}
-					<span style="color: white; font-size: 27px;"><b>{{user_post_length}} Posts</b></span>
-					{% endif %}
-
-					{% if user_followers == 0 or user_followers == 1 %}
-					<span style="color: white; font-size: 27px;"><b>{{user_followers}} follower</b></span>
-					{% else %}
-					<span style="color: white; font-size: 27px;"><b>{{user_followers}} followers</b></span>
-					{% endif %}
-
-
-					<span style="color: white; font-size: 27px;"><b>{{user_following}} following</b></span>
-
-					<input type="hidden" value="{{user.username}}" name="follower" />
-					<input type="hidden" value="{{user_object.username}}" name="user" />
-
-					{% if user_object.username == user.username %}
-					<a href="/settings" data-ripple="">Account Settings</a>
-					{% else %}
-					<a data-ripple=""><button type="submit" style="background-color: #ffc0cb; border: #ffc0cb;">{{button_text}}</button></a>
-					{% endif %}
-
-					</div>
-				</form>
-
-				<!-- <form class="edit-phto">
-					<i class="fa fa-camera-retro"></i>
-					<label class="fileContainer">
-						Upload Cover Photo
-					<input type="file"/>
-					</label>
-				</form> -->
-				<div class="container-fluid">
-					<div class="row merged">
-						<div class="col-lg-2 col-sm-3">
-							<div class="user-avatar">
-								<figure>
-									<img src="{{user_profile.profileimg.url}}" style="height: 250px; width: 100%;" alt="">
-									<!-- <form class="edit-phto">
-										<i class="fa fa-camera-retro"></i>
-										<label class="fileContainer">
-											<a href="#account-settings">Upload Profile Photo</a>
-										</label>
-									</form> -->
-								</figure>
-							</div>
-						</div>
-						<div class="col-lg-10 col-sm-9">
-							<div class="timeline-info">
-								<ul>
-									<li class="admin-name">
-									  <h5 style="color: black;white-space: nowrap; width: 110px; font-size: 27px;"><b>@{{user_profile.user.username}}</b><!--<i class="fa fa-check-circle" style="color: #48dbfb;" aria-hidden="true"></i>--></h5>
-									  <!--<span>Group Admin</span>-->
-									</li>
-									<!--<li>
-										<a class="" href="javascript:void(0)" title="" data-ripple="">Go live!</a>
-										<a class="" href="javascript:void(0)" title="" data-ripple="">Music</a>
-										<a class="" href="emporium/index-3.html" title="" data-ripple="">Emporium</a>
-										<a class="" href="fitness/index.html" title="" data-ripple="">Health Inspection</a>
-										<a class="" href="settings/account-setting.html" title="" data-ripple="">Settings</a>
-										<a class="" href="javascript:void(0)" title="" data-ripple="">Upload</a>
-										<a class="" href="time-line.html" title="" data-ripple="">time line</a>
-										<a class="" href="timeline-photos.html" title="" data-ripple="">Photos</a>
-										<a class="" href="timeline-videos.html" title="" data-ripple="">Videos</a>
-										<a class="" href="timeline-friends.html" title="" data-ripple="">Friends</a>
-										<a class="" href="timeline-groups.html" title="" data-ripple="">Groups</a>
-										<a class="" href="about.html" title="" data-ripple="">about</a>
-										<a class="" href="#" title="" data-ripple="">more</a>
-
-									</li>-->
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section><!-- top area -->
-		<section>
-			<div class="bio">
-					{{user_profile.bio}}
-			</div>
-		</section>
-		
-	<section>
-		<div class="gap gray-bg">
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-lg-12">
-						<div class="row" id="page-contents">
-							<div class="col-lg-3">
-								<aside class="sidebar static">
-									
-									
-									
-								</aside>
-							</div><!-- sidebar -->
-							
-
-
-
-
-
-
-
-
-
-							<div class="col-lg-6">
-								<div class="central-meta">
-									<ul class="photos">
-					
-										{% for post in user_posts %}
-										{% if post.image.url != null %}
-										<li>
-											<a class="strip" href="{{post.image.url}}" title="" data-strip-group="mygroup" data-strip-group-options="loop: false">
-												<img src="{{post.image.url}}" style="height: 250px; width: 300px;" alt=""></a>
-										</li>
-										{% endif %}
-										{% endfor %}
-										
-										
-										
-									</ul>
-									<!--<div class="lodmore"><button class="btn-view btn-load-more"></button></div>-->
-								</div><!-- photos -->
-							</div><!-- centerl meta -->
-							<div class="col-lg-3">
-								<aside class="sidebar static">
-									
-								</aside>
-							</div><!-- sidebar -->
-						</div>	
-					</div>
-				</div>
-			</div>
-		</div>	
-	</section>
-
-	
-	
-	<script data-cfasync="false" src="{% static '../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js' %}"></script><script src="{% static 'js/main.min.js' %}"></script>
-	<script src="{% static 'js/script.js' %}"></script>
-
-</body>	
-
-
-</html>
+{% endblock content %}
