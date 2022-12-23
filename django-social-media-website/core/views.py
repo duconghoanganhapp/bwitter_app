@@ -328,6 +328,8 @@ def like_posts(request):
 @login_required(login_url='signin')
 def profile(request, pk):
     user_object = User.objects.get(username=request.user.username)
+    if pk :
+        user_object = User.objects.get(username=pk)
     user_profile = Profile.objects.get(user=user_object)
     user_following_lists = []
     feed = []
@@ -382,8 +384,6 @@ def profile(request, pk):
 
     return render(request, 'profile.html', 
         {
-            'user_profile': user_profile, 
-        'user_profile': user_profile,
             'user_profile': user_profile, 
             'posts':feed_list, 
             'comment_list':comment_list, 
