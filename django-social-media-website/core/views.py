@@ -351,7 +351,7 @@ def profile(request, pk):
     feed_list = list(chain(*feed))
     comment_list = list(chain(*comment))
     
-    feed_list = list(Post.objects.filter(user=request.user))
+    feed_list = list(Post.objects.filter(user=user_object))
     # get post_id of post which current user liked 
     like_posts_lists = LikePost.objects.filter(username=request.user.username)
     like_posts_list = []
