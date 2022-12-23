@@ -302,7 +302,7 @@
         <!-- start list trends-->
         <div class="list__follow">
           {% for suggestion in suggestions_username_profile_list %}
-          <div class="flex follow">
+          <div class="flex follow" style="justify-content: space-between;">
             <div class="flex follow-info">
               <a href="/profile/{{suggestion.user}}">
                 <img src="{{suggestion.profileimg.url}}" class="">
