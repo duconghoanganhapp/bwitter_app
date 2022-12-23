@@ -382,6 +382,19 @@ def profile(request, pk):
 
     suggestions_username_profile_list = list(chain(*username_profile_list))
 
+    user_posts = Post.objects.filter(user=pk)
+    # user_post_length = len(user_posts)
+    follower = request.user.username
+    user = pk
+
+    if FollowersCount.objects.filter(follower=follower, user=user).first():
+        button_text = 'Unfollow'
+    else:
+        button_text = 'Follow'
+    
+    user_followers = len(FollowersCount.objects.filter(user=pk))
+    user_following = len(FollowersCount.objects.filter(follower=pk))
+
     return render(request, 'profile.html', 
         {
             'user_profile': user_profile, 
@@ -389,7 +402,13 @@ def profile(request, pk):
             'comment_list':comment_list, 
             'suggestions_username_profile_list': suggestions_username_profile_list[:4], 
             'like_posts_list':like_posts_list, 
-            'flag_tag': '0'
+            'flag_tag': '0',
+            # 'user_posts': user_posts,
+            # 'user_post_length': user_post_length,
+            'button_text': button_text,
+            'user_followers': user_followers,
+            'user_following': user_following,
+            'user_object': user_object,
         })
 
 @login_required(login_url='signin')
