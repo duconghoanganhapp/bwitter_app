@@ -8,7 +8,9 @@
  
 
 body{
-  background-color: #B0B3B8!important;
+  background-color: #e6ecf0!important;
+  --twitter-color: #50b7f5;
+  --twitter-background: #e6ecf0;
 }
 
 /* ---------------------------------- */
@@ -2535,4 +2537,22 @@ header .uk-dropdown {
     position: absolute;
   }
 }
- 
+/* signin */
+.logo{
+  color: var(--twitter-color);
+  font-size: 48px;
+}
+
+.twitter-color{
+  background-color: var(--twitter-color) !important;
+}
+
+.twitter-background{
+  background-color: var(--twitter-background);
+}
+
+/* setting */
+.save-img-btn:hover{
+  opacity: 0.6;
+}
+

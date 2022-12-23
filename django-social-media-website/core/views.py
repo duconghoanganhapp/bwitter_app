@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from .models import Profile, Post, LikePost, FollowersCount
+from .models import Profile, Post, LikePost, FollowersCount, Comment
 from itertools import chain
 import random
 import uuid
@@ -13,16 +13,9 @@ import uuid
 def index(request):
     user_object = User.objects.get(username=request.user.username)
     user_profile = Profile.objects.get(user=user_object)
-    all_profile = Profile.objects.all().values()
-    print(all_profile)
     user_following_lists = []
     feed = []
-    avatar_user_post = {}
-    
-    # get post avatar user
-    # for x in all_profile:
-    #     avatar_user_post[str(x.user)] = x.profileimg.url
-    # print(avatar_user_post)
+    comment = []
 
     user_following = FollowersCount.objects.filter(follower=request.user.username)
     
@@ -33,8 +26,12 @@ def index(request):
     for user_following_list in user_following_lists:
         feed_lists = Post.objects.filter(profile=user_following_list)
         feed.append(feed_lists)
+        comment_lists = Comment.objects.filter(profile=user_following_list)
+        comment.append(comment_lists)
+
 
     feed_list = list(chain(*feed))
+    comment_list = list(chain(*comment))
     
     # get post_id of post which current user liked 
     like_posts_lists = LikePost.objects.filter(username=request.user.username)
@@ -66,17 +63,219 @@ def index(request):
 
     suggestions_username_profile_list = list(chain(*username_profile_list))
 
-    return render(request, 'index2.html', {'user_profile': user_profile, 'posts':feed_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4], 'like_posts_list':like_posts_list})
+    return render(request, 'index.html', {'user_profile': user_profile, 'posts':feed_list, 'comment_list':comment_list, 'suggestions_username_profile_list': suggestions_username_profile_list[:4], 'like_posts_list':like_posts_list})
+@login_required(login_url='signin')
+def tweets(request):
+    user_object = User.objects.get(username=request.user.username)
+    user_profile = Profile.objects.get(user=user_object)
+    user_following_lists = []
+    feed = []
+    comment = []
 
+    user_following = FollowersCount.objects.filter(follower=request.user.username)
+    
+    for users in user_following:
+        user_following_lists.append(users.profile.id)
+
+    # get feed list of user following list 
+    for user_following_list in user_following_lists:
+        feed_lists = Post.objects.filter(profile=user_following_list)
+        feed.append(feed_lists)
+        comment_lists = Comment.objects.filter(profile=user_following_list)
+        comment.append(comment_lists)
+
+        
+    feed_list = list(chain(*feed))
+    comment_list = list(chain(*comment))
+    
+    feed_list = list(Post.objects.filter(user=request.user))
+    # get post_id of post which current user liked 
+    like_posts_lists = LikePost.objects.filter(username=request.user.username)
+    like_posts_list = []
+    for id in like_posts_lists:
+        like_posts_list.append(uuid.UUID(id.post_id))
+
+    # user suggestion starts
+    all_users = User.objects.all()
+    user_following_all = []
+
+    for user in user_following:
+        user_list = User.objects.get(username=user.user)
+        user_following_all.append(user_list)
+    
+    new_suggestions_list = [x for x in list(all_users) if (x not in list(user_following_all))]
+    current_user = User.objects.filter(username=request.user.username)
+    final_suggestions_list = [x for x in list(new_suggestions_list) if ( x not in list(current_user))]
+    random.shuffle(final_suggestions_list)
+    username_profile = []
+    username_profile_list = []
+
+    for users in final_suggestions_list:
+        username_profile.append(users.id)
+
+    for ids in username_profile:
+        profile_lists = Profile.objects.filter(id_user=ids)
+        username_profile_list.append(profile_lists)
+
+    suggestions_username_profile_list = list(chain(*username_profile_list))
+
+    return render(request, 'profile.html', 
+        {
+            'user_profile': user_profile, 
+            'posts':feed_list, 
+            'comment_list':comment_list, 
+            'suggestions_username_profile_list': suggestions_username_profile_list[:4], 
+            'like_posts_list':like_posts_list, 
+            'flag_tag': '1'
+        })
+@login_required(login_url='signin')
+def reply(request):
+    user_object = User.objects.get(username=request.user.username)
+    user_profile = Profile.objects.get(user=user_object)
+    user_following_lists = []
+    feed = []
+    comment = []
+
+    user_following = FollowersCount.objects.filter(follower=request.user.username)
+    
+    for users in user_following:
+        user_following_lists.append(users.profile.id)
+
+    # get feed list of user following list 
+    for user_following_list in user_following_lists:
+        feed_lists = Post.objects.filter(profile=user_following_list)
+        feed.append(feed_lists)
+        comment_lists = Comment.objects.filter(profile=user_following_list)
+        comment.append(comment_lists)
+
+        
+    feed_list = list(chain(*feed))
+    comment_list = list(chain(*comment))
+    
+    feed_list = list(Post.objects.filter(user=request.user))
+    # get post_id of post which current user liked 
+    like_posts_lists = LikePost.objects.filter(username=request.user.username)
+    like_posts_list = []
+    for id in like_posts_lists:
+        like_posts_list.append(uuid.UUID(id.post_id))
+
+    # user suggestion starts
+    all_users = User.objects.all()
+    user_following_all = []
+
+    for user in user_following:
+        user_list = User.objects.get(username=user.user)
+        user_following_all.append(user_list)
+    
+    new_suggestions_list = [x for x in list(all_users) if (x not in list(user_following_all))]
+    current_user = User.objects.filter(username=request.user.username)
+    final_suggestions_list = [x for x in list(new_suggestions_list) if ( x not in list(current_user))]
+    random.shuffle(final_suggestions_list)
+    username_profile = []
+    username_profile_list = []
+
+    for users in final_suggestions_list:
+        username_profile.append(users.id)
+
+    for ids in username_profile:
+        profile_lists = Profile.objects.filter(id_user=ids)
+        username_profile_list.append(profile_lists)
+
+    suggestions_username_profile_list = list(chain(*username_profile_list))
+
+    return render(request, 'profile.html', 
+        {
+            'user_profile': user_profile, 
+            'posts':feed_list, 
+            'comment_list':comment_list, 
+            'suggestions_username_profile_list': suggestions_username_profile_list[:4], 
+            'like_posts_list':like_posts_list, 
+            'flag_tag': '2'
+        })
+@login_required(login_url='signin')
+def likes(request):
+    user_object = User.objects.get(username=request.user.username)
+    user_profile = Profile.objects.get(user=user_object)
+    user_following_lists = []
+    feed = []
+    comment = []
+
+    user_following = FollowersCount.objects.filter(follower=request.user.username)
+    
+    for users in user_following:
+        user_following_lists.append(users.profile.id)
+
+    # get feed list of user following list 
+    for user_following_list in user_following_lists:
+        feed_lists = Post.objects.filter(profile=user_following_list)
+        feed.append(feed_lists)
+        comment_lists = Comment.objects.filter(profile=user_following_list)
+        comment.append(comment_lists)
+        
+    feed_list = list(chain(*feed))
+    comment_list = list(chain(*comment))
+    
+    # feed_list = list(Post.objects.filter(user=request.user))
+    # get post_id of post which current user liked 
+    like_posts_lists = LikePost.objects.filter(username=request.user.username)
+    like_posts_list = []
+    for id in like_posts_lists:
+        like_posts_list.append(uuid.UUID(id.post_id))
+
+    # user suggestion starts
+    all_users = User.objects.all()
+    user_following_all = []
+
+    for user in user_following:
+        user_list = User.objects.get(username=user.user)
+        user_following_all.append(user_list)
+    
+    new_suggestions_list = [x for x in list(all_users) if (x not in list(user_following_all))]
+    current_user = User.objects.filter(username=request.user.username)
+    final_suggestions_list = [x for x in list(new_suggestions_list) if ( x not in list(current_user))]
+    random.shuffle(final_suggestions_list)
+    username_profile = []
+    username_profile_list = []
+
+    for users in final_suggestions_list:
+        username_profile.append(users.id)
+
+    for ids in username_profile:
+        profile_lists = Profile.objects.filter(id_user=ids)
+        username_profile_list.append(profile_lists)
+
+    suggestions_username_profile_list = list(chain(*username_profile_list))
+
+    return render(request, 'profile.html', 
+        {
+            'user_profile': user_profile, 
+            'posts':feed_list, 
+            'comment_list':comment_list, 
+            'suggestions_username_profile_list': suggestions_username_profile_list[:4], 
+            'like_posts_list':like_posts_list, 
+            'flag_tag': '3'
+        })
 @login_required(login_url='signin')
 def upload(request):
-
     if request.method == 'POST':
-        user = request.user.username
+        profile = Profile.objects.get(id_user=request.user.id)
         image = request.FILES.get('image_upload')
         caption = request.POST['caption']
 
-        new_post = Post.objects.create(user=user, image=image, caption=caption)
+        new_post = Post.objects.create(profile=profile,user=request.user.username, image=image, caption=caption)
+        new_post.save()
+
+        return redirect('/')
+    else:
+        return redirect('/')
+@login_required(login_url='signin')
+def comment(request):
+    if request.method == 'POST':
+        profile = Profile.objects.get(id_user=request.user.id)
+        image = request.FILES.get('image_upload')
+        caption = request.POST['caption']
+
+        new_post = Comment.objects.create(profile=profile,user=request.user.username, image=image, caption=caption)
         new_post.save()
 
         return redirect('/')
@@ -128,11 +327,63 @@ def like_posts(request):
 
 @login_required(login_url='signin')
 def profile(request, pk):
-    user_object = User.objects.get(username=pk)
+    user_object = User.objects.get(username=request.user.username)
+    if pk :
+        user_object = User.objects.get(username=pk)
     user_profile = Profile.objects.get(user=user_object)
-    user_posts = Post.objects.filter(user=pk)
-    user_post_length = len(user_posts)
+    user_following_lists = []
+    feed = []
+    comment = []
 
+    user_following = FollowersCount.objects.filter(follower=request.user.username)
+    
+    for users in user_following:
+        user_following_lists.append(users.profile.id)
+
+    # get feed list of user following list 
+    for user_following_list in user_following_lists:
+        feed_lists = Post.objects.filter(profile=user_following_list)
+        feed.append(feed_lists)
+        comment_lists = Comment.objects.filter(profile=user_following_list)
+        comment.append(comment_lists)
+
+        
+    feed_list = list(chain(*feed))
+    comment_list = list(chain(*comment))
+    
+    feed_list = list(Post.objects.filter(user=user_object))
+    # get post_id of post which current user liked 
+    like_posts_lists = LikePost.objects.filter(username=request.user.username)
+    like_posts_list = []
+    for id in like_posts_lists:
+        like_posts_list.append(uuid.UUID(id.post_id))
+
+    # user suggestion starts
+    all_users = User.objects.all()
+    user_following_all = []
+
+    for user in user_following:
+        user_list = User.objects.get(username=user.user)
+        user_following_all.append(user_list)
+    
+    new_suggestions_list = [x for x in list(all_users) if (x not in list(user_following_all))]
+    current_user = User.objects.filter(username=request.user.username)
+    final_suggestions_list = [x for x in list(new_suggestions_list) if ( x not in list(current_user))]
+    random.shuffle(final_suggestions_list)
+    username_profile = []
+    username_profile_list = []
+
+    for users in final_suggestions_list:
+        username_profile.append(users.id)
+
+    for ids in username_profile:
+        profile_lists = Profile.objects.filter(id_user=ids)
+        username_profile_list.append(profile_lists)
+
+    suggestions_username_profile_list = list(chain(*username_profile_list))
+
+    user_posts = Post.objects.filter(user=pk)
+    # user_post_length = len(user_posts)
     follower = request.user.username
     user = pk
 
@@ -140,33 +391,38 @@ def profile(request, pk):
         button_text = 'Unfollow'
     else:
         button_text = 'Follow'
-
+    
     user_followers = len(FollowersCount.objects.filter(user=pk))
     user_following = len(FollowersCount.objects.filter(follower=pk))
 
-    context = {
-        'user_object': user_object,
-        'user_profile': user_profile,
-        'user_posts': user_posts,
-        'user_post_length': user_post_length,
-        'button_text': button_text,
-        'user_followers': user_followers,
-        'user_following': user_following,
-    }
-    return render(request, 'profile.html', context)
+    return render(request, 'profile.html', 
+        {
+            'user_profile': user_profile, 
+            'posts':feed_list, 
+            'comment_list':comment_list, 
+            'suggestions_username_profile_list': suggestions_username_profile_list[:4], 
+            'like_posts_list':like_posts_list, 
+            'flag_tag': '0',
+            'button_text': button_text,
+            'user_followers': user_followers,
+            'user_following': user_following,
+            'user_object': user_object,
+        })
 
 @login_required(login_url='signin')
 def follow(request):
     if request.method == 'POST':
         follower = request.POST['follower']
         user = request.POST['user']
+        user_object = User.objects.get(username=user)
+        user_profile = Profile.objects.get(user=user_object)
 
         if FollowersCount.objects.filter(follower=follower, user=user).first():
             delete_follower = FollowersCount.objects.get(follower=follower, user=user)
             delete_follower.delete()
             return redirect('/profile/'+user)
         else:
-            new_follower = FollowersCount.objects.create(follower=follower, user=user)
+            new_follower = FollowersCount.objects.create(follower=follower, user=user, profile=user_profile)
             new_follower.save()
             return redirect('/profile/'+user)
     else:

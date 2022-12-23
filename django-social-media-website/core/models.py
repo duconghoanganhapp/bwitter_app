@@ -42,3 +42,35 @@ class FollowersCount(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     def __str__(self):
         return self.user
+
+class Comment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    caption = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='cmt_images')
+
+    def __str__(self):
+        return self.caption
+
+
+# class Conversation(models.Model):
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+#     user_rep = models.ForeignKey(User, on_delete=models.CASCADE)
+#     created_at = models.DateTimeField(default=datetime.now)
+
+#     def __str__(self):
+#         return self.created_at
+
+class Message(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    user_rep = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='cmt_images')
+    # conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=datetime.now)
+
+    def __str__(self):
+        return self.content
