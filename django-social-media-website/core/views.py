@@ -403,8 +403,6 @@ def profile(request, pk):
             'suggestions_username_profile_list': suggestions_username_profile_list[:4], 
             'like_posts_list':like_posts_list, 
             'flag_tag': '0',
-            # 'user_posts': user_posts,
-            # 'user_post_length': user_post_length,
             'button_text': button_text,
             'user_followers': user_followers,
             'user_following': user_following,
@@ -416,7 +414,7 @@ def follow(request):
     if request.method == 'POST':
         follower = request.POST['follower']
         user = request.POST['user']
-        user_object = User.objects.get(username=request.user.username)
+        user_object = User.objects.get(username=user)
         user_profile = Profile.objects.get(user=user_object)
 
         if FollowersCount.objects.filter(follower=follower, user=user).first():
